@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "544850090798",
+    "firebase_url": "https://chat-nav-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "chat-nav",
+    "storage_bucket": "chat-nav.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:544850090798:android:6d1d077e50171bf7feb8bf",
+        "android_client_info": {
+          "package_name": "com.example.chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "544850090798-i6f6ob693p5tml4h0d05ltq1l0bj6h5d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAS3k9NdhkZagoUrQ132cui4uQCkCyrswY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "544850090798-i6f6ob693p5tml4h0d05ltq1l0bj6h5d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
