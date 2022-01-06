@@ -2,7 +2,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class PushNotifiaction {
-  static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   // void init() async {
   //   final String? token =
@@ -29,7 +29,7 @@ class PushNotifiaction {
       return await _firebaseMessaging.getToken();
     } catch (e) {
       print(e);
-      return null;
+      return "";
     }
   }
 }

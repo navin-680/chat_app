@@ -9,7 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 class AppUser {
-  static final User user = FirebaseAuth.instance.currentUser;
+  static final User? user = FirebaseAuth.instance.currentUser;
   static final ProfileController profile = Get.put(ProfileController());
 
 
@@ -17,7 +17,7 @@ class AppUser {
     if (user == null) {
       return 0;
     } else {
-      final ProfileData userProfile = await profile!.get();
+      final ProfileData userProfile = await profile.get();
       if (userProfile.name == null) {
         return 1;
       } else {

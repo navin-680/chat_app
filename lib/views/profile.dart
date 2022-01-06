@@ -4,16 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProfilePage extends StatelessWidget {
+  var username, profileUrl;
+
+  ProfilePage({Key? key, this.username, this.profileUrl}) : super(key: key);
   ProfileController profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-
+    profileController.profileUrl=profileUrl;
+    profileController.nameText.text=username;
     return Scaffold(
         key: profileController.scaffoldKey,
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             "Account settings",
             style: TextStyle(color: Colors.white),
           ),
@@ -26,9 +30,8 @@ class ProfilePage extends StatelessWidget {
                     padding: EdgeInsets.only(top: size.height * .06),
                     child: Align(
                         child: GestureDetector(
-                            child: profileController.image == null &&
-                                    profileController.profileUrl == null
-                                ? CircleAvatar(
+                            child: profileController.image == null && profileController.profileUrl == null
+                                ? const CircleAvatar(
                                     radius: 80,
                                     child: Icon(
                                       Icons.person_add,
@@ -49,10 +52,10 @@ class ProfilePage extends StatelessWidget {
                         horizontal: size.width * .06,
                         vertical: size.height * .05),
                     child: TextField(
-                      style: TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 20),
                       controller: profileController.nameText,
                       cursorColor: Colors.green,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           prefixIcon: Icon(Icons.person),
                           hintText: 'Your Name'),
                     )),

@@ -22,8 +22,8 @@ class ProfileController extends GetxController{
 
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  File image=File("");
-  String profileUrl="";
+  File? image;
+  String? profileUrl;
 
   bool isProcessing = false;
 
@@ -42,19 +42,16 @@ class ProfileController extends GetxController{
   }
 
   Future<QueryDocumentSnapshot> getDoc() async {
-    final String uid = FirebaseAuth.instance.currentUser.uid;
+    final String? uid = FirebaseAuth.instance.currentUser?.uid;
     final CollectionReference? userDocs = firestore.collection('users');
     QuerySnapshot docs =
     await userDocs!.where('uid', isEqualTo: uid).limit(1).get();
-    if (docs.docs.isNotEmpty) {
       return docs.docs.first;
-    } else {
-      return null;
-    }
+
   }
 
-  Future<void> init({String ccode,  String phone}) async {
-    final String uid = FirebaseAuth.instance.currentUser.uid;
+  Future<void> init({required String ccode,  required String phone}) async {
+    final String? uid = FirebaseAuth.instance.currentUser?.uid;
 
     final QueryDocumentSnapshot? oldUser = await getDoc();
     if (oldUser != null) {
@@ -63,40 +60,39 @@ class ProfileController extends GetxController{
         'phone': phone,
       });
     } else {
-      final String token = await PushNotifiaction.getToken();
+      final String? token = await PushNotifiaction.getToken();
       final CollectionReference userDocs = firestore.collection('users');
-
-      // return await userDocs.add({
-      //   'uid': uid,
-      //   'ccode': ccode,
-      //   'phone': phone,
-      //   'token': token,
-      //   'name': null,
-      //   'imageUrl': null
-      // });
+       await userDocs.add({
+        'uid': uid,
+        'ccode': ccode,
+        'phone': phone,
+        'token': token,
+        'name': nameText.text,
+        'imageUrl': profileUrl
+      });
     }
   }
 
-  // Future<void> update({String? name, File image}) async {
-  //   final String? uid = FirebaseAuth.instance.currentUser?.uid;
-  //   if (image != null) {
-  //     try {
-  //       firebase_storage.TaskSnapshot r =
-  //       await _firebaseStorage.ref('profile/$uid/').putFile(image);
-  //       DocumentSnapshot? documentSnapshot = await getDoc();
-  //       return await documentSnapshot!.reference
-  //           .update({'imageUrl': 'profile/$uid', 'name': name});
-  //     } on firebase_core.FirebaseException catch (e) {
-  //       throw e;
-  //     }
-  //   } else {
-  //     DocumentSnapshot? documentSnapshot = await getDoc();
-  //     return await documentSnapshot!.reference.update({'name': name});
-  //   }
-  // }
+  Future<void> updateProfile({String? name, File? imagePath}) async {
+    final String? uid = FirebaseAuth.instance.currentUser?.uid;
+    if (imagePath != null) {
+      try {
+        firebase_storage.TaskSnapshot r =
+        await firebaseStorage.ref('profile/$uid/').putFile(imagePath!);
+        DocumentSnapshot? documentSnapshot = await getDoc();
+        return await documentSnapshot.reference
+            .update({'imageUrl': 'profile/$uid', 'name': name});
+      } on firebase_core.FirebaseException catch (e) {
+        throw e;
+      }
+    } else {
+      DocumentSnapshot? documentSnapshot = await getDoc();
+      return await documentSnapshot.reference.update({'name': name});
+    }
+  }
 
   Future<void> setToken(String token) async {
-    final String uid = FirebaseAuth.instance.currentUser.uid;
+    final String? uid = FirebaseAuth.instance.currentUser?.uid;
 
     QuerySnapshot _docs = await firestore
         .collection('users')
@@ -119,7 +115,7 @@ class ProfileController extends GetxController{
 
     if (name.isEmpty) return;
     try {
-     // await _profile!.update(name: name, image: _image);
+      await updateProfile(name: name, imagePath: image);
      // Navigator.pushNamedAndRemoveUntil(context, '/chatList', (route) => false);
     } catch (e) {
       setError("Something went wrong error!");
@@ -143,7 +139,7 @@ class ProfileController extends GetxController{
     //_scaffoldKey.currentState.showSnackBar(snackBar);
   }
   void onTapImage() {
-    scaffoldKey.currentState.showBottomSheet((context) {
+    scaffoldKey.currentState?.showBottomSheet((context) {
       return Container(
         //color: Colors.grey,
         child: Wrap(

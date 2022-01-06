@@ -1,20 +1,26 @@
+import 'dart:convert';
+
 import 'package:chatapp/controller/profile_controller.dart';
 import 'package:chatapp/model/profile_model.dart';
-import 'package:chatapp/utils/app_user.dart';
-import 'package:chatapp/views/home.dart';
 import 'package:chatapp/views/profile.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 
 
 class LoginController extends GetxController {
   var loading = false.obs;
+  GoogleSignInAccount? currentUser;
+  var contactText = ''.obs;
   final FirebaseAuth auth = FirebaseAuth.instance;
   final ProfileController profile = Get.put(ProfileController());
-  final User user = FirebaseAuth.instance.currentUser;
+  final User? user = FirebaseAuth.instance.currentUser;
+  var username="".obs;
+  var userProfilePhoto="".obs;
+
+
 
 
   var isSend = false.obs;
@@ -24,10 +30,8 @@ class LoginController extends GetxController {
   String verificationId="";
   int resendToken=0;
 
-  final TextEditingController phoneText = TextEditingController();
-  final TextEditingController codeText = TextEditingController();
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
 
 
    Future<int> loginStatus() async {
@@ -43,61 +47,34 @@ class LoginController extends GetxController {
     }
   }
 
-  void onTapSend() async {
-    final String phone = phoneText.text;
-    if (phone.isEmpty) return;
-    setProcessing(true);
-    await auth.verifyPhoneNumber(
-        phoneNumber: countryCode + phoneText.text,
-        //phoneNumber: '+16505556789',
-        verificationCompleted: (PhoneAuthCredential phoneAuthCredential)  {
-          setProcessing(true);
-          auth.signInWithCredential(phoneAuthCredential).then((u) async {
-            await profile.init(ccode: countryCode, phone: phone);
-            setProcessing(false);
-            Get.to(()=>ProfilePage());
-            //Navigator.pushNamedAndRemoveUntil(context, '/profile', (route) => false);
-          }).catchError((e) {
-            setError(e.code);
-            setProcessing(false);
-          });
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          setError(e.code);
-          setProcessing(false);
-        },
-        codeSent: (String verificationId, int resendToken) {
-          verificationId = verificationId;
-          resendToken = resendToken;
-          setProcessing(false);
-          isSend.value = true;
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {});
-  }
 
-  void onTapVerify() async {
-    final String phone = phoneText.text;
-    final String code = codeText.text;
-    if (code.length != 6) return;
-    setProcessing(true);
-    AuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
-        verificationId: verificationId, smsCode: code);
-    auth.signInWithCredential(phoneAuthCredential).then((u) async {
-      await profile.init(ccode: countryCode, phone: phone);
-      setProcessing(false);
-     // Navigator.pushNamedAndRemoveUntil(context, '/profile', (route) => false);
-    }).catchError((e) {
-      setError(e.code);
-      setProcessing(false);
+
+
+
+
+
+  Future<void> signInWithGoogle() async {
+    // Trigger the authentication flow
+    currentUser= await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth = await currentUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+     await FirebaseAuth.instance.signInWithCredential(credential).then((value) => {
+      Get.to(()=>ProfilePage(username: value.user?.displayName!,profileUrl: value.user?.photoURL!,))
     });
 
-    // _addUser(await _auth.signInWithCredential(phoneAuthCredential));
   }
 
-  void onTapResend() {
-    setProcessing(false);
-  //  setState(() => _isSend = false);
-  }
+
+  //Future<void> handleSignOut() => _googleSignIn.disconnect();
 
   void setProcessing(bool v) {
     //setState(() => _isProcessing = v);

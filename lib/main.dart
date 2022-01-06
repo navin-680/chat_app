@@ -30,6 +30,6 @@ Future main() async {
       //inputDecorationTheme: InputDecorationTheme()
     ),
     title: 'Chat Application',
-    home: const SplashScreen(),
+    home:  SplashScreen(),
   ));
 }

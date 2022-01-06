@@ -41,6 +41,8 @@ class _ProfileImageState extends State<ProfileImage> {
     } catch (e) {
       setState(() => _url = '');
     }
+
+    _url = widget.path!.toString().contains("http")?widget.path:'';
   }
 
   Color randomColor() {
