@@ -68,7 +68,7 @@ class LoginController extends GetxController {
 
     // Once signed in, return the UserCredential
      await FirebaseAuth.instance.signInWithCredential(credential).then((value) => {
-      Get.to(()=>ProfilePage(username: value.user?.displayName!,profileUrl: value.user?.photoURL!,))
+      Get.to(()=>ProfilePage())
     });
 
   }

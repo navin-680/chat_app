@@ -24,10 +24,13 @@ class ProfileController extends GetxController{
 
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  var imageFilePath= "".obs;
   File? image;
-  String? profileUrl;
+  RxString? profileUrl="".obs;
 
   bool isProcessing = false;
+
+
 
   Future<ProfileData> get() async {
     QueryDocumentSnapshot? userDoc = await getDoc();
@@ -38,6 +41,8 @@ class ProfileController extends GetxController{
         'imageUrl': userDoc['imageUrl']
       });
     } else {
+    profileUrl!.value= FirebaseAuth.instance.currentUser!.photoURL!;
+    nameText.text=FirebaseAuth.instance.currentUser!.displayName!;
       return ProfileData.fromJson(
           {'uid': null, 'name': null, 'imageUrl': null});
     }
@@ -48,16 +53,23 @@ class ProfileController extends GetxController{
     final CollectionReference? userDocs = firestore.collection('users');
     QuerySnapshot docs =
     await userDocs!.where('uid', isEqualTo: uid).limit(1).get();
-    if(docs.docs.isNotEmpty)
+    if(docs.docs.isNotEmpty){
+      profileUrl!.value=docs.docs.first['imageUrl'];
+      nameText.text=docs.docs.first['name'];
       return docs.docs.first;
-    else
+    }
+
+    else{
       return null;
+    }
+
 
   }
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
+   await get();
     init(ccode: '+91', phone: '7835966564');
   }
 
@@ -81,7 +93,7 @@ class ProfileController extends GetxController{
         'phone': phone,
         'token': token,
         'name': nameText.text,
-        'imageUrl': profileUrl
+        'imageUrl': profileUrl!.value
       });
     }
   }
@@ -117,9 +129,12 @@ class ProfileController extends GetxController{
   }
 
   void setImage(ImageSource source) async {
-    //Navigator.pop(context);
-    final pickedFile = await picker.getImage(source: source);
-   // if (pickedFile != null) setState(() => _image = File(pickedFile.path));
+    Get.back();
+    final pickedFile = await picker.pickImage(source: source);
+    if (pickedFile != null) {
+      imageFilePath.value=pickedFile.path;
+     image = File(pickedFile.path);
+    }
   }
 
   void onSubmit() async {
