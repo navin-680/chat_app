@@ -15,7 +15,6 @@ class LoginController extends GetxController {
   GoogleSignInAccount? currentUser;
   var contactText = ''.obs;
   final FirebaseAuth auth = FirebaseAuth.instance;
-  final ProfileController profile = Get.put(ProfileController());
   final User? user = FirebaseAuth.instance.currentUser;
   var username="".obs;
   var userProfilePhoto="".obs;
@@ -35,7 +34,7 @@ class LoginController extends GetxController {
 
 
    Future<int> loginStatus() async {
-    if (user == null) {
+    /*if (user == null) {
       return 0;
     } else {
       final ProfileData userProfile = await profile.get();
@@ -44,7 +43,8 @@ class LoginController extends GetxController {
       } else {
         return 3;
       }
-    }
+    }*/
+     return 0;
   }
 
 

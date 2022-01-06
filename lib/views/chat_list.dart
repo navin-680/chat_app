@@ -1,68 +1,24 @@
-import 'package:chatApp/services/chat/chatData.dart';
+import 'package:chatapp/controller/chat_list_controller.dart';
+import 'package:chatapp/model/chat_data_model.dart';
+import 'package:chatapp/utils/app_user.dart';
+import 'package:chatapp/views/profile.dart';
+import 'package:chatapp/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'chatBoxView.dart';
-import 'contactList.dart';
-import 'package:chatApp/services/chat/chatList.dart';
-import 'package:chatApp/widget/profileImage.dart';
-import 'package:chatApp/services/appUser/appUser.dart';
 
+import 'login.dart';
 enum AppBarAction { Profile, SignOut }
-
-class ChatListView extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _ChatListViewState();
-}
-
-class _ChatListViewState extends State<ChatListView> {
-  final ChatList _chatList = ChatList();
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  void _onTapFloatingActionBtn() {
-    Navigator.push(context, MaterialPageRoute(builder: (_) {
-      return ContactList();
-    }));
-  }
-
-  void _onTapSearch() {
-    // TODO
-  }
-
-  void _onChatListItemTap(ChatData profile) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) {
-      return ChatBoxView(
-        name: profile.name,
-        imageUrl: profile.imageUrl,
-        reciver: profile.uid,
-        clId: profile.clId,
-      );
-    }));
-  }
-
-  String _toTimeString(DateTime dateTime) {
-    final int numDays = DateTime.parse(
-            DateFormat("yyyy-MM-dd").format(DateTime.now()))
-        .difference(DateTime.parse(DateFormat("yyyy-MM-dd").format(dateTime)))
-        .inDays;
-    switch (numDays) {
-      case 0:
-        return DateFormat("K:mm a").format(dateTime);
-      case 1:
-        return 'Yesterday';
-      default:
-        return DateFormat("MM/dd/yy").format(dateTime);
-    }
-  }
+class ChatList extends StatelessWidget {
+   ChatList({Key? key}) : super(key: key);
+  ChatListController chatListController=Get.put(ChatListController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
-          onPressed: _onTapFloatingActionBtn,
+          onPressed: chatListController.onTapFloatingActionBtn,
           child: Icon(Icons.add),
         ),
         appBar: AppBar(
@@ -76,7 +32,7 @@ class _ChatListViewState extends State<ChatListView> {
                 Icons.search,
                 color: Colors.white,
               ),
-              onPressed: _onTapSearch,
+              onPressed: chatListController.onTapSearch,
             ),
             PopupMenuButton<AppBarAction>(
               icon: Icon(
@@ -85,14 +41,16 @@ class _ChatListViewState extends State<ChatListView> {
               ),
               onSelected: (v) async {
                 if (v == AppBarAction.Profile) {
-                  Navigator.pushNamed(context, '/profile');
+                  //Navigator.pushNamed(context, '/profile');
+                  Get.to(()=>ProfilePage());
                 } else {
                   await AppUser.logout();
-                  Navigator.pushNamed(context, '/home');
+                  Get.to(()=>LoginPage());
+                  //Navigator.pushNamed(context, '/home');
                 }
               },
               itemBuilder: (BuildContext context) =>
-                  <PopupMenuEntry<AppBarAction>>[
+              <PopupMenuEntry<AppBarAction>>[
                 const PopupMenuItem(
                   value: AppBarAction.Profile,
                   child: Text('Account settings'),
@@ -108,7 +66,7 @@ class _ChatListViewState extends State<ChatListView> {
         body: Container(
           padding: EdgeInsets.all(5),
           child: StreamBuilder<List<ChatData>>(
-            stream: _chatList.load(),
+            stream: chatListController.load(),
             builder:
                 (BuildContext context, AsyncSnapshot<List<ChatData>> snapshot) {
               if (snapshot.hasError) {
@@ -127,7 +85,7 @@ class _ChatListViewState extends State<ChatListView> {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
-              if (snapshot.data.length == 0)
+              if (snapshot.data!.length == 0)
                 return Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -138,23 +96,23 @@ class _ChatListViewState extends State<ChatListView> {
                   ),
                 );
               return ListView(
-                children: snapshot.data.map((p) {
+                children: snapshot.data!.map((p) {
                   return ListTile(
                     contentPadding: EdgeInsets.all(10),
                     leading: ProfileImage(
                       path: p.imageUrl,
                     ),
-                    subtitle: Text(p.subtitle),
+                    subtitle: Text(p.subtitle!),
                     title: Text(
-                      p.name,
+                      p.name!,
                       style: TextStyle(fontSize: 18),
                     ),
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(_toTimeString(p.lastUpdate)),
+                        Text(chatListController.toTimeString(p.lastUpdate!)),
                         Visibility(
-                            visible: p.unreadCount > 0,
+                            visible: p.unreadCount! > 0,
                             child: CircleAvatar(
                               backgroundColor: Theme.of(context).primaryColor,
                               foregroundColor: Colors.white,
@@ -163,7 +121,7 @@ class _ChatListViewState extends State<ChatListView> {
                             ))
                       ],
                     ),
-                    onTap: () => _onChatListItemTap(p),
+                    onTap: () => chatListController.onChatListItemTap(p),
                   );
                 }).toList(),
               );
@@ -171,4 +129,12 @@ class _ChatListViewState extends State<ChatListView> {
           ),
         ));
   }
+
+
+
+
+
+
+
+
 }

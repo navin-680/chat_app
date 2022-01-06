@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:chatapp/model/profile_model.dart';
 import 'package:chatapp/utils/app_user.dart';
 import 'package:chatapp/utils/push_notification.dart';
+import 'package:chatapp/views/chat_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
@@ -41,14 +43,25 @@ class ProfileController extends GetxController{
     }
   }
 
-  Future<QueryDocumentSnapshot> getDoc() async {
+  Future<QueryDocumentSnapshot?> getDoc() async {
     final String? uid = FirebaseAuth.instance.currentUser?.uid;
     final CollectionReference? userDocs = firestore.collection('users');
     QuerySnapshot docs =
     await userDocs!.where('uid', isEqualTo: uid).limit(1).get();
+    if(docs.docs.isNotEmpty)
       return docs.docs.first;
+    else
+      return null;
 
   }
+
+  @override
+  void onInit() {
+    super.onInit();
+    init(ccode: '+91', phone: '7835966564');
+  }
+
+
 
   Future<void> init({required String ccode,  required String phone}) async {
     final String? uid = FirebaseAuth.instance.currentUser?.uid;
@@ -78,16 +91,16 @@ class ProfileController extends GetxController{
     if (imagePath != null) {
       try {
         firebase_storage.TaskSnapshot r =
-        await firebaseStorage.ref('profile/$uid/').putFile(imagePath!);
+        await firebaseStorage.ref('profile/$uid/').putFile(imagePath);
         DocumentSnapshot? documentSnapshot = await getDoc();
-        return await documentSnapshot.reference
+        return await documentSnapshot?.reference
             .update({'imageUrl': 'profile/$uid', 'name': name});
       } on firebase_core.FirebaseException catch (e) {
         throw e;
       }
     } else {
       DocumentSnapshot? documentSnapshot = await getDoc();
-      return await documentSnapshot.reference.update({'name': name});
+      return await documentSnapshot?.reference.update({'name': name});
     }
   }
 
@@ -114,12 +127,19 @@ class ProfileController extends GetxController{
     setProcess(true);
 
     if (name.isEmpty) return;
-    try {
-      await updateProfile(name: name, imagePath: image);
-     // Navigator.pushNamedAndRemoveUntil(context, '/chatList', (route) => false);
-    } catch (e) {
-      setError("Something went wrong error!");
+
+    if(image!=null){
+      try {
+        await updateProfile(name: name, imagePath: image);
+        Get.to(()=>ChatList());
+        // Navigator.pushNamedAndRemoveUntil(context, '/chatList', (route) => false);
+      } catch (e) {
+        setError("Something went wrong error!");
+      }
+    }else{
+      Get.to(()=>ChatList());
     }
+
   }
 
   void setProcess(bool v) => {

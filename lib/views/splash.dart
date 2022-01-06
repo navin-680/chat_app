@@ -1,7 +1,9 @@
 import 'package:chatapp/utils/app_user.dart';
 import 'package:chatapp/views/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import 'chat_list.dart';
 import 'login.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,22 +22,14 @@ class _SplashScreenState extends State<SplashScreen> {
               AppUser.loginStatus().then((s) {
                 switch (s) {
                   case 0:
-                    Navigator.pushAndRemoveUntil(context,
-                        MaterialPageRoute(builder: (_) {
-                      return LoginPage();
-                    }), (route) => false);
+                    Get.offAll(()=>LoginPage());
                     break;
                   case 1:
-                    Navigator.pushAndRemoveUntil(context,
-                        MaterialPageRoute(builder: (_) {
-                      return ProfilePage();
-                    }), (route) => false);
+                    Get.offAll(()=>ProfilePage());
+
                     break;
                   default:
-                    Navigator.pushAndRemoveUntil(context,
-                        MaterialPageRoute(builder: (_) {
-                      return ProfilePage();
-                    }), (route) => false);
+                    Get.offAll(()=>ChatList());
                 }
               })
             });

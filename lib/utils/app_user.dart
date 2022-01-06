@@ -10,15 +10,15 @@ import 'package:get/get.dart';
 
 class AppUser {
   static final User? user = FirebaseAuth.instance.currentUser;
-  static final ProfileController profile = Get.put(ProfileController());
+
 
 
   static Future<int> loginStatus() async {
     if (user == null) {
       return 0;
     } else {
-      final ProfileData userProfile = await profile.get();
-      if (userProfile.name == null) {
+
+      if (user!.displayName == null) {
         return 1;
       } else {
         return 3;
