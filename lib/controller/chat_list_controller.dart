@@ -1,6 +1,5 @@
 import 'package:chatapp/model/chat_data_model.dart';
 import 'package:chatapp/model/profile_model.dart';
-import 'package:chatapp/utils/app_user.dart';
 import 'package:chatapp/views/chat_page.dart';
 import 'package:chatapp/views/contact_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

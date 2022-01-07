@@ -1,12 +1,5 @@
-
-
-
-
-
-import 'package:chatapp/controller/profile_controller.dart';
-import 'package:chatapp/model/profile_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get.dart';
+
 
 class AppUser {
   static final User? user = FirebaseAuth.instance.currentUser;

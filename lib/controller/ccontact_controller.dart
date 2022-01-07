@@ -7,7 +7,9 @@ import 'package:get/get.dart';
 
 class ContactController extends GetxController{
   var contactList = [].obs;
-  bool isProcessing = false;
+  var isProcessing = false.obs;
+  final String? _uid = FirebaseAuth.instance.currentUser!.uid;
+  final FirebaseFirestore?_firestore = FirebaseFirestore.instance;
 
   @override
   void onInit() {
@@ -23,30 +25,12 @@ class ContactController extends GetxController{
   }
 
   void loadConatact() async {
-    setProcessing(true);
+    isProcessing.value=true;
     contactList.clear();
     final res = await fetch();
     contactList.addAll(res) ;
-    setProcessing(false);
+    isProcessing.value=false;
   }
-
-  void setProcessing(bool isProcessing) =>{};
-
-
-  void onContactTap(ProfileData profile) {
-    Get.to(()=>ChatPage(name: profile.name,
-      imageUrl: profile.imageUrl,
-      reciver: profile.uid,
-      clId: profile.clId));
-
-  }
-
-
-
-
-  final String? _uid = FirebaseAuth.instance.currentUser!.uid;
-  final FirebaseFirestore?_firestore = FirebaseFirestore.instance;
-
   Future<List<ProfileData>> fetch() async {
     final CollectionReference _usersRef = _firestore!.collection('users');
     final QuerySnapshot _usersDoc =
@@ -61,6 +45,8 @@ class ContactController extends GetxController{
     }).toList();
   }
 
+
+
   Future<ProfileData> getProfile(String uid) async {
     final CollectionReference usersRef = _firestore!.collection('users');
     final QuerySnapshot users =
@@ -72,5 +58,13 @@ class ContactController extends GetxController{
       'imageUrl': e['imageUrl'],
       'clId': null
     });
+  }
+
+  void onContactTap(ProfileData profile) {
+    Get.to(()=>ChatPage(name: profile.name,
+      imageUrl: profile.imageUrl,
+      reciver: profile.uid,
+      clId: profile.clId));
+
   }
 }

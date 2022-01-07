@@ -5,7 +5,6 @@ import 'package:chatapp/views/profile.dart';
 import 'package:chatapp/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import 'login.dart';
 enum AppBarAction { Profile, SignOut }
@@ -20,7 +19,7 @@ class ChatList extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: chatListController.onTapFloatingActionBtn,
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ),
         appBar:AppBar(
           automaticallyImplyLeading: false,
@@ -33,25 +32,25 @@ class ChatList extends StatelessWidget {
           ),
           actions: [
             IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.search,
                 color: Colors.black,
               ),
               onPressed: chatListController.onTapSearch,
             ),
             PopupMenuButton<AppBarAction>(
-              icon: Icon(
+              icon: const Icon(
                 Icons.more_vert,
                 color: Colors.black,
               ),
               onSelected: (v) async {
                 if (v == AppBarAction.Profile) {
-                  //Navigator.pushNamed(context, '/profile');
+
                   Get.to(()=>ProfilePage());
                 } else {
                   await AppUser.logout();
-                  Get.to(()=>LoginPage());
-                  //Navigator.pushNamed(context, '/home');
+                  Get.offAll(()=>LoginPage());
+
                 }
               },
               itemBuilder: (BuildContext context) =>
@@ -69,54 +68,50 @@ class ChatList extends StatelessWidget {
           ],
           backgroundColor: Colors.white,
         ),
-
-
-
-
-
         body: Container(
-          padding: EdgeInsets.all(5),
+          padding: const EdgeInsets.all(5),
           child: StreamBuilder<List<ChatData>>(
             stream: chatListController.load(),
             builder:
                 (BuildContext context, AsyncSnapshot<List<ChatData>> snapshot) {
               if (snapshot.hasError) {
-                print(snapshot.error);
                 return Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                    children: const [
                       Icon(Icons.error_outline),
                       Text("Something went wrong")
                     ],
                   ),
                 );
               }
-              if (snapshot.connectionState == ConnectionState.waiting)
-                return Center(
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
-              if (snapshot.data!.length == 0)
+              }
+              if (snapshot.data!.isEmpty) {
                 return Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                    children: const [
                       Icon(Icons.error_outline),
                       Text("No active chatroom")
                     ],
                   ),
                 );
+              }
               return ListView(
                 children: snapshot.data!.map((p) {
                   return ListTile(
-                    contentPadding: EdgeInsets.all(10),
+                    contentPadding: const EdgeInsets.all(10),
                     leading: ProfileImage(
                       path: p.imageUrl,
                     ),
                     subtitle: Text(p.subtitle!),
                     title: Text(
                       p.name!,
-                      style: TextStyle(fontSize: 18),
+                      style: const TextStyle(fontSize: 18),
                     ),
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

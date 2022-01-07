@@ -26,15 +26,15 @@ ChatController chatController=Get.put(ChatController());
       nip: BubbleNip.leftTop,
       color: Colors.white,
       elevation: 1 * px,
-      margin: BubbleEdges.only(top: 8.0, right: 50.0),
+      margin: const BubbleEdges.only(top: 8.0, right: 50.0),
       alignment: Alignment.topLeft,
     );
 
     final BubbleStyle styleMe = BubbleStyle(
       nip: BubbleNip.rightTop,
-      color: Color.fromARGB(255, 225, 255, 199),
+      color: const Color.fromARGB(255, 225, 255, 199),
       elevation: 1 * px,
-      margin: BubbleEdges.only(top: 8.0, left: 50.0),
+      margin: const BubbleEdges.only(top: 8.0, left: 50.0),
       alignment: Alignment.topRight,
     );
     return Scaffold(
@@ -46,11 +46,11 @@ ChatController chatController=Get.put(ChatController());
         iconTheme: const IconThemeData(color: Colors.black),
         title:  Text(
           name!,
-          style: TextStyle(color: Colors.black),
+          style: const TextStyle(color: Colors.black),
         ),
         actions: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 5),
+            padding: const EdgeInsets.symmetric(vertical: 5),
             child: ProfileImage(
               path: imageUrl!,
             ),
@@ -70,70 +70,69 @@ ChatController chatController=Get.put(ChatController());
                     builder: (BuildContext context,
                         AsyncSnapshot<List<Message>> snapshot) {
                       if (snapshot.hasError) {
-                        print(snapshot.error);
                         return Center(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children: const [
                               Icon(Icons.error_outline),
                               Text("Something went wrong")
                             ],
                           ),
                         );
                       }
-                      if (snapshot.connectionState == ConnectionState.waiting)
-                        return Center(
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
-                      if (snapshot.data!.isEmpty)
+                      }
+                      if (snapshot.data!.isEmpty) {
                         return Center(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children: const [
                               Icon(Icons.error_outline),
                               Text("No chat yet")
                             ],
                           ),
                         );
+                      }
                       return ListView(
                         controller: chatController.controller,
                         children: snapshot.data!.map((m) {
                           if (!m.isMessage!) {
                             return Bubble(
-                              margin: BubbleEdges.only(top: 10),
+                              margin: const BubbleEdges.only(top: 10),
                               alignment: Alignment.center,
-                              color: Color.fromRGBO(212, 234, 244, 1.0),
+                              color: const Color.fromRGBO(212, 234, 244, 1.0),
                               child: Text(m.text!,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 11.0)),
+                                  style: const TextStyle(fontSize: 11.0)),
                             );
                           }
                           final DateTime dateTime = m.time!.toDate();
                           if (!m.isSend! & !m.isRead!) m.setAsRead();
                           return Bubble(
                               margin: m.isSend!
-                                  ? BubbleEdges.only(right: 10)
-                                  : BubbleEdges.only(left: 10),
+                                  ? const BubbleEdges.only(right: 10)
+                                  : const BubbleEdges.only(left: 10),
                               style: m.isSend! ? styleMe : styleSomebody,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    child: Text(
-                                      m.text!,
-                                      style: TextStyle(fontSize: 16),
-                                    ),
+                                  Text(
+                                    m.text!,
+                                    style: const TextStyle(fontSize: 16),
                                   ),
                                   Wrap(
                                     children: [
                                       Text(
                                         DateFormat('K:mm a').format(dateTime),
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 12, color: Colors.grey),
                                       ),
                                       Visibility(
                                         visible: m.isSend! & m.isRead!,
-                                        child: Icon(
+                                        child: const Icon(
                                           Icons.check,
                                           size: 16,
                                           color: Colors.blue,
@@ -148,11 +147,11 @@ ChatController chatController=Get.put(ChatController());
                     },
                   ))),
           Padding(
-              padding: EdgeInsets.only(top: 5),
+              padding: const EdgeInsets.only(top: 5),
               child: ListTile(
                   title: TextField(
                     onSubmitted: (v) => chatController.send(),
-                    scrollPadding: EdgeInsets.all(20),
+                    scrollPadding: const EdgeInsets.all(20),
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: size.width * .001,
@@ -174,7 +173,7 @@ ChatController chatController=Get.put(ChatController());
                         backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Colors.white,
                         radius: 25,
-                        child: Icon(Icons.send)),
+                        child: const Icon(Icons.send)),
                     onTap: chatController.send,
                   ))),
         ],

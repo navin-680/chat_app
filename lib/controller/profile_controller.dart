@@ -1,8 +1,5 @@
-
 import 'dart:io';
-
 import 'package:chatapp/model/profile_model.dart';
-import 'package:chatapp/utils/app_user.dart';
 import 'package:chatapp/utils/push_notification.dart';
 import 'package:chatapp/views/chat_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,21 +13,21 @@ import 'package:image_picker/image_picker.dart';
 
 class ProfileController extends GetxController{
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final firebase_storage.FirebaseStorage firebaseStorage =
-      firebase_storage.FirebaseStorage.instance;
-
+  final firebase_storage.FirebaseStorage firebaseStorage = firebase_storage.FirebaseStorage.instance;
   final ImagePicker picker = ImagePicker();
   final TextEditingController nameText = TextEditingController();
-
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
-
   var imageFilePath= "".obs;
   File? image;
   RxString? profileUrl="".obs;
-
   bool isProcessing = false;
 
-
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+    await get();
+    init(ccode: '+91', phone: '7835966564');
+  }
 
   Future<ProfileData> get() async {
     QueryDocumentSnapshot? userDoc = await getDoc();
@@ -58,7 +55,6 @@ class ProfileController extends GetxController{
       nameText.text=docs.docs.first['name'];
       return docs.docs.first;
     }
-
     else{
       return null;
     }
@@ -66,12 +62,7 @@ class ProfileController extends GetxController{
 
   }
 
-  @override
-  Future<void> onInit() async {
-    super.onInit();
-   await get();
-    init(ccode: '+91', phone: '7835966564');
-  }
+
 
 
 
@@ -147,7 +138,6 @@ class ProfileController extends GetxController{
       try {
         await updateProfile(name: name, imagePath: image);
         Get.to(()=>ChatList());
-        // Navigator.pushNamedAndRemoveUntil(context, '/chatList', (route) => false);
       } catch (e) {
         setError("Something went wrong error!");
       }
@@ -162,16 +152,7 @@ class ProfileController extends GetxController{
   };
 
   void setError(String error) {
-    final snackBar = SnackBar(
-      backgroundColor: Colors.redAccent,
-      content: Text(
-        error,
-        //error.replaceAll('-', '\t'),
-        style: TextStyle(color: Colors.white),
-      ),
-      duration: Duration(seconds: 20),
-    );
-    //_scaffoldKey.currentState.showSnackBar(snackBar);
+   Get.snackbar("Error", error);
   }
   void onTapImage() {
     scaffoldKey.currentState?.showBottomSheet((context) {

@@ -2,20 +2,16 @@ import 'dart:io';
 
 import 'package:chatapp/controller/profile_controller.dart';
 import 'package:chatapp/widgets/profile_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProfilePage extends StatelessWidget {
-
-
   ProfilePage({Key? key}) : super(key: key);
   ProfileController profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-
     return Scaffold(
         backgroundColor: Colors.white,
         key: profileController.scaffoldKey,
@@ -29,7 +25,6 @@ class ProfilePage extends StatelessWidget {
           ),
           backgroundColor: Colors.white,
         ),
-
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -38,7 +33,8 @@ class ProfilePage extends StatelessWidget {
                     padding: EdgeInsets.only(top: size.height * .06),
                     child: Align(
                         child: GestureDetector(
-                            child: profileController.image == null && profileController.profileUrl?.value == null
+                            child: profileController.image == null &&
+                                    profileController.profileUrl?.value == null
                                 ? const CircleAvatar(
                                     radius: 80,
                                     child: Icon(
@@ -46,16 +42,26 @@ class ProfilePage extends StatelessWidget {
                                       size: 60,
                                     ))
                                 : profileController.image != null
-                                    ? Obx(()=> CircleAvatar(
-                              maxRadius: 80,
-                              child: ClipOval(child: Image.file(File(profileController.imageFilePath.value),height: 200,width: 200,fit: BoxFit.cover,)),
-                            ),
-                                    )
-                                    : Obx(()=> ProfileImage(
-                                          path: profileController.profileUrl!.value,
+                                    ? Obx(
+                                        () => CircleAvatar(
+                                          maxRadius: 80,
+                                          child: ClipOval(
+                                              child: Image.file(
+                                            File(profileController
+                                                .imageFilePath.value),
+                                            height: 200,
+                                            width: 200,
+                                            fit: BoxFit.cover,
+                                          )),
+                                        ),
+                                      )
+                                    : Obx(
+                                        () => ProfileImage(
+                                          path: profileController
+                                              .profileUrl!.value,
                                           radius: 80,
                                         ),
-                                    ),
+                                      ),
                             onTap: profileController.onTapImage))),
                 Container(
                     padding: EdgeInsets.symmetric(
