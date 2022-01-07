@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:chatapp/controller/chat_list_controller.dart';
 import 'package:chatapp/model/message_model.dart';
-import 'package:chatapp/views/chat_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

@@ -35,14 +35,19 @@ class _ProfileImageState extends State<ProfileImage> {
   }
 
   void initImage() async {
-    try {
-      final url = await _firebaseStorage.ref(widget.path).getDownloadURL();
-      setState(() => _url = url);
-    } catch (e) {
-      setState(() => _url = '');
+    if(widget.path!.toString().contains("http")){
+      _url = widget.path ;
+    }else{
+      try {
+        final url = await _firebaseStorage.ref(widget.path).getDownloadURL();
+        setState(() => _url = url);
+      } catch (e) {
+        setState(() => _url = '');
+      }
     }
 
-    _url = widget.path!.toString().contains("http")?widget.path:'';
+
+
   }
 
   Color randomColor() {
