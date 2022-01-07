@@ -16,28 +16,33 @@ class ChatList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: chatListController.onTapFloatingActionBtn,
           child: Icon(Icons.add),
         ),
-        appBar: AppBar(
-          title: Text(
-            'ChatApp',
-            style: TextStyle(color: Colors.white),
+        appBar:AppBar(
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.black),
+          title: const Text(
+            "Chat List",
+            style: TextStyle(color: Colors.black),
           ),
           actions: [
             IconButton(
               icon: Icon(
                 Icons.search,
-                color: Colors.white,
+                color: Colors.black,
               ),
               onPressed: chatListController.onTapSearch,
             ),
             PopupMenuButton<AppBarAction>(
               icon: Icon(
                 Icons.more_vert,
-                color: Colors.white,
+                color: Colors.black,
               ),
               onSelected: (v) async {
                 if (v == AppBarAction.Profile) {
@@ -62,7 +67,13 @@ class ChatList extends StatelessWidget {
               ],
             )
           ],
+          backgroundColor: Colors.white,
         ),
+
+
+
+
+
         body: Container(
           padding: EdgeInsets.all(5),
           child: StreamBuilder<List<ChatData>>(

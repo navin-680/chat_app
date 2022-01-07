@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     Future.delayed(
-        const Duration(seconds: 3),
+        const Duration(seconds: 2),
         () => {
               AppUser.loginStatus().then((s) {
                 switch (s) {

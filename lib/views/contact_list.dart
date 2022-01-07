@@ -10,26 +10,36 @@ class ConatctList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text(
-            'Contacts',
-            style: TextStyle(color: Colors.white),
+      automaticallyImplyLeading: true,
+      centerTitle: true,
+      elevation: 0,
+      iconTheme: const IconThemeData(color: Colors.black),
+      title: const Text(
+        "Contacts",
+        style: TextStyle(color: Colors.black),
+      ),
+      actions: [
+        IconButton(
+          icon: Icon(
+            Icons.search,
+            color: Colors.black,
           ),
-          actions: [
-            IconButton(
-              icon: Icon(
-                Icons.search,
-                color: Colors.white,
-              ),
-              onPressed: contactController.onTapSearch,
-            ),
-            IconButton(
-              color: Colors.white,
-              onPressed: contactController.sync,
-              icon: Icon(Icons.sync),
-            )
-          ],
+          onPressed: contactController.onTapSearch,
         ),
+        IconButton(
+          color: Colors.black,
+          onPressed: contactController.sync,
+          icon: Icon(Icons.sync),
+        )
+      ],
+      backgroundColor: Colors.white,
+    ),
+
+
+
+
         body: Obx(()=> Container(
             padding: EdgeInsets.all(5),
             child: contactController.isProcessing

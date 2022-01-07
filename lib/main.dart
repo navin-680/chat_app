@@ -10,7 +10,7 @@ Future main() async {
   await Firebase.initializeApp();
   runApp(GetMaterialApp(
     theme: ThemeData(
-      primaryColor: const Color(0xFF21BFBD),
+      primaryColor: const Color(0xFF000000),
       appBarTheme: const AppBarTheme(iconTheme:  IconThemeData(color: Colors.white)),
       textTheme: const TextTheme(
           headline1: TextStyle(
@@ -21,7 +21,7 @@ Future main() async {
               fontWeight: FontWeight.normal),
           button:  TextStyle(color: Colors.white, fontSize: 18)),
       buttonTheme: ButtonThemeData(
-          buttonColor: const Color(0xFF21BFBD),
+          buttonColor: const Color(0xFF000000),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
             // side: BorderSide(color: Colors.greenAccent)

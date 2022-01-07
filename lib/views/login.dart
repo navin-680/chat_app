@@ -10,50 +10,61 @@ import 'package:pin_input_text_field/pin_input_text_field.dart';
 class LoginPage extends StatelessWidget {
   LoginController loginController = Get.put(LoginController());
 
-  Widget _buildBody() {
-    GoogleSignInAccount? user = loginController.currentUser;
-    if (user != null) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          ListTile(
-            leading: GoogleUserCircleAvatar(
-              identity: user,
-            ),
-            title: Text(user.displayName ?? ''),
-            subtitle: Text(user.email),
-          ),
-          const Text("Signed in successfully."),
-          Obx(()=> Text(loginController.contactText.value)),
-
-        ],
-      );
-    } else {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          const Text("You are not currently signed in."),
-          ElevatedButton(
-            child: const Text('SIGN IN'),
-            onPressed: loginController.signInWithGoogle,
-          ),
-        ],
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery
-        .of(context)
-        .size;
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Google Sign In'),
-        ),
-        body: ConstrainedBox(
-          constraints: const BoxConstraints.expand(),
-          child: _buildBody(),
-        ));
+        body: Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: RadialGradient(
+                focalRadius: 28,
+                colors: [
+                  Color(0xFFE9EDEA),
+                  Color(0xFFDBE8E2),
+                ],
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Image(
+                  image: AssetImage("assets/images/otp.png"),
+                  width: 250,
+                ),
+                const SizedBox(
+                  height: 100,
+                ),
+
+                GestureDetector(
+                  onTap: () {
+                    loginController.loading.value = true;
+                    loginController.signInWithGoogle();
+                  },
+                  child: Container(
+                    height: 60,
+                    width: 275,
+                    decoration: BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0xff383838),
+                          blurRadius: 10,
+                          offset: Offset(0, 3),
+                        )
+                      ],
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.black,
+                    ),
+                    child: const Center(
+                        child: Text(
+                          "Sign In",
+                          style:
+                          TextStyle(color: Colors.white, fontSize: 22),
+                        )),
+                  ),
+                ),
+              ],
+            )),
+    );
   }
 }

@@ -17,13 +17,19 @@ class ProfilePage extends StatelessWidget {
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+        backgroundColor: Colors.white,
         key: profileController.scaffoldKey,
         appBar: AppBar(
+          centerTitle: true,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.black),
           title: const Text(
             "Account settings",
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.black),
           ),
+          backgroundColor: Colors.white,
         ),
+
         body: Center(
           child: SingleChildScrollView(
             child: Column(
