@@ -39,21 +39,15 @@ ChatController chatController=Get.put(ChatController());
     );
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          color: Colors.white,
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(
-          name!,
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
+      appBar:  AppBar(
+        automaticallyImplyLeading: true,
         centerTitle: true,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+        title:  Text(
+          name!,
+          style: TextStyle(color: Colors.black),
+        ),
         actions: [
           Padding(
             padding: EdgeInsets.symmetric(vertical: 5),
@@ -62,7 +56,9 @@ ChatController chatController=Get.put(ChatController());
             ),
           )
         ],
+        backgroundColor: Colors.white,
       ),
+
       body: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
